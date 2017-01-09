@@ -60,7 +60,7 @@ Select the SimpleView *folder* in the Project view.
 Now do:  **File > New > File >**
 
 * macOS Cocoa Class
-* name:  **MainWinController**
+* name:  **MainWindowController**
 * subclassing NSWindowController
 * Swift language
 
@@ -195,7 +195,7 @@ MWC:  button_pushed
 MyView:  myViewDoIt
 ```
 
-Select the View ***folder*** in the Project view, do:  **File > New > File >** and make a new Swift file.
+Select the View ***folder*** in the Project view, do:  **File > New > File >** and make a new Swift file called **Helper.swift**.
 
 ![](figs/swift_file.png) 
 
@@ -228,7 +228,7 @@ MyView:  myViewDoIt
 Helper:  helperDoIt
 ```
 
-We can pass data from the helper to the calling function just be returning it.  However, you may occasionally need to obtain a reference to the MainWindowController (or the View) from somewhere like **Helper.swift**.
+We can pass data from the helper to the calling function just by returning it.  However, you may occasionally need to obtain a reference to the MainWindowController (or the View) from somewhere like **Helper.swift**.
 
 We can get a reference to the App Delegate and MWC with:
 
@@ -279,7 +279,7 @@ One last detail about Views.  It happens that code can change the model but the 
     }
 ```
 
-(or call it through some variation on what we have above).
+and call it through some variation on what we have above.
 
-Well, that's it for this basic introduction.
+Well, that's it for this basic introduction.  Hope this is useful to you, I know it will be for me.
 
