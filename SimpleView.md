@@ -1,3 +1,5 @@
+This is a simple "how to" document that describes how to make an app with a custom view in Swift3 using Xcode.  My current version of Xcode is 8.2.1.
+
 ### Custom view
 
 Start by making a new Xcode project:
@@ -6,16 +8,18 @@ Start by making a new Xcode project:
 * name:  **SimpleView**
 * no tests
 * Swift language
-* default location
+* default location (for me, the Desktop)
 
-Select the View ***folder*** in the Project view.
+Next, select the View ***folder*** in the Project navigator.
 
 ![](figs/folder.png)
 
 Now do:  **File > New > File >**
+
 ![](figs/New_File_New.png)
 
 Make this a
+
 ![](figs/Cocoa_class.png)
 
 * macOS Cocoa Class
@@ -23,7 +27,8 @@ Make this a
 * subclassing NSView
 * Swift language
 
-Subclassing NSView
+The second stage of this:
+
 ![](figs/NSView_subclass.png)
 
 Add the following snippet to the default code generated for the **draw** function in **MyView.swift**:
@@ -34,7 +39,7 @@ let backgroundColor = NSColor.cyan
 backgroundColor.set()
 NSBezierPath.fill(bounds)
 ```
-This uses the new style, substituting **.cyan** for **.cyanColor()**.
+This uses the new Swift3 syntax, substituting **.cyan** for **.cyanColor()**.
 
 Optional:  if you want to check this code you *could* do this:
 
@@ -48,9 +53,9 @@ Optional:  if you want to check this code you *could* do this:
 
 Now revert that change.
 
-Life will be better with a Window Controller.  If we make the new .swift file, Xcode will make the corresponding .xib file for us.
+Life will be better with a Window Controller.  If we create the new .swift file, Xcode will make the corresponding .xib file for us.
 
-Select the View *folder* in the Project view.
+Select the SimpleView *folder* in the Project view.
 
 Now do:  **File > New > File >**
 
@@ -60,32 +65,33 @@ Now do:  **File > New > File >**
 * Swift language
 
 
-Make sure to check Also create xib file. 
+Make sure to check Also create XIB file. 
 
 ![](figs/mwc.png) 
 
 If you build and run at this point you'll see a window but it's not this one.  We have to tell our window to appear on screen.
 
 
-In the **AppDelegate** (just below the Class declaration) and the IBOutlet declaration:
+In the **AppDelegate** (just below the Class declaration) and the IBOutlet declaration where it says 
 
 ```css
-var mainWindowController: MainWindowController?
+@IBOutlet weak var window: NSWindow!
 ```
-add this code so it reads
+
+ add this code so it reads
 
 ```css
 @IBOutlet weak var window: NSWindow!
 var mainWindowController: MainWindowController?
 ```
 
-Also, add something to **applicationDidFinishLaunching**.  Create a window controller corresponding to a .xib file of the same name.
+Also, put something else in **applicationDidFinishLaunching**.  We add a window controller corresponding to a .xib file of the same name.
 
 ```css
 let mwc = MainWindowController(windowNibName: "MainWindowController")
 mwc.showWindow(self)
 ```
-The Hillegass book says:  do setup first, then assignment.  So now set the property to point to the window controller
+The Hillegass book says:  do setup first, then assignment.  So now set the property to point to the window controller we just made
 
 ```css  
 self.mainWindowController = mwc
@@ -111,7 +117,7 @@ Run and see the custom view turn cyan.
 
 ### Actions
 
-IBActions are connected to File's Owner which propagates them to our MainWindowController.  Put this code in **MainWindowController.swift**:
+IBActions are connected to File's Owner seen in the "nib" (generated from the .xib file) which propagates the action to our MainWindowController.  Put this code in **MainWindowController.swift**:
 
 ```css
 @IBAction func button_pushed(sender: AnyObject) {
@@ -122,9 +128,9 @@ IBActions are connected to File's Owner which propagates them to our MainWindowC
 Open **MainWindowController.xib** and drag a button onto the window.  Control-drag from the button to **File's Owner** and click on **button_pushedWithSender**.
 ![](figs/target_action.png) 
 
-**File's Owner** is the blue cube on the left.  The button is first selected before the drag.  In the black box that appears after the drag you will see **button_pushedWithSender**.  Our method has had **WithSender** appended to it.
+**File's Owner** is the blue cube on the left.  The button is first selected before the drag.  In the black box that appears after the drag you will see **button_pushedWithSender**.  (Our method has had **WithSender** appended to it).
 
-Build and run and the log (in the Debug area) will show:
+Build and run and the log (in the Debug area) will show the first line of:
 
 ```css
 MyView:  draw
@@ -133,10 +139,10 @@ MWC:  button_pushed
 
 You will get the second line after you push the button in the running app.
 
-Our first question at this point is:  how to handle an IBAction in MyView?  Xcode will not allow connection of the button in IB to the Custom View 
+Our question at this point is:  how to handle an IBAction in MyView?  Xcode will not allow connection of the button in IB to the Custom View 
 even if the function code is in **MyView.swift**.
 
-We can get "key events" by doing this:
+We can get "key events" in the view by doing this:
 
 ```css
 override var acceptsFirstResponder: Bool { return true }
@@ -148,7 +154,7 @@ So, we have to receive the action of the button in the MWC, but then call code e
 
 ```
 func myViewDoIt() {
-        Swift.print("myViewDoIt")
+        Swift.print("MyView:  myViewDoIt")
     }
 ```
 
@@ -173,8 +179,8 @@ class MainWindowController: NSWindowController {
 
 Then click on the .xib file and control drag from **File's Owner** to the custom view.  It helps to select the custom view first.  It will show "Outlets".  Choose "myView".  Finally, change the code in **MainWindowController.swift** slightly to
 
-m
-```
+
+```css
 @IBAction func button_pushed(sender: AnyObject) {
         Swift.print("MWC:  button_pushed")
         myView.myViewDoIt()
@@ -186,7 +192,7 @@ The log reads:
 ```css
 MyView:  draw
 MWC:  button_pushed
-myViewDoIt
+MyView:  myViewDoIt
 ```
 
 Select the View ***folder*** in the Project view, do:  **File > New > File >** and make a new Swift file.
@@ -199,7 +205,7 @@ In the new file, place this function:
 import Foundation
 
 func helperDoIt() {
-    Swift.print("helperDoIt")
+    Swift.print("Helper:  helperDoIt")
 }
 ```
 
@@ -218,8 +224,8 @@ Build and run the app, and push the button, and the log will read
 ```css
 MyView:  draw
 MWC:  button_pushed
-myViewDoIt
-helperDoIt
+MyView:  myViewDoIt
+Helper:  helperDoIt
 ```
 
 We can pass data from the helper to the calling function just be returning it.  However, you may occasionally need to obtain a reference to the MainWindowController (or the View) from somewhere like **Helper.swift**.
@@ -259,7 +265,7 @@ The log shows:
 MyView:  draw
 MWC:  button2_pushed
 Helper:  helperDoIt2
-myViewDoIt
+MyView:  myViewDoIt
 ```
 
 We have propagated a signal from the button to the MWC to the Helper;  grabbed a reference there to the App Delegate and then to the MWC, to its outlet the View, and then finally called a function in the View.
@@ -275,5 +281,5 @@ One last detail about Views.  It happens that code can change the model but the 
 
 (or call it through some variation on what we have above).
 
-Well, that's it for a basic introduction to an app with a custom view in Swift3 using Xcode.
+Well, that's it for this basic introduction.
 
