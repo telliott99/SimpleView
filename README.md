@@ -1,4 +1,4 @@
-This write-up describes how to make an app with a custom view in Swift3 using Xcode.  My current version of Xcode is 8.2.1.
+This write-up describes how to make an app with a custom view in Swift4 using Xcode.  My current version of Xcode is 8.2.1.  (The original version was Swift3 using Xcode 8.2.1).
 
 ### Custom view
 
@@ -10,9 +10,11 @@ Start by making a new Xcode project:
 * Swift language
 * default location (for me, the Desktop)
 
-Next, select the View ***folder*** in the Project navigator.
+Next, select the SimpleView ***folder*** in the Project navigator.
 
 ![](figs/folder.png)
+
+The new (Swift4) version has another folder called SimpleView.entitlements.  I have no idea at the moment.
 
 Do:  **File > New > File >**
 
@@ -79,10 +81,18 @@ In the **AppDelegate** just below the Class declaration is the IBOutlet declarat
 @IBOutlet weak var window: NSWindow!
 ```
 
- add an additional line so it reads
+We used to delete (or comment out) that line
 
 ```css
-@IBOutlet weak var window: NSWindow!
+// @IBOutlet weak var window: NSWindow!
+```
+
+and remove the window from MainMenu.xib.  But things have changed.  Now Xcode automatically puts the window back in the nib and will complain if the `window` outlet isn't there.  We'll deal with this in a minute.
+
+Add an additional line so it reads
+
+```css
+// @IBOutlet weak var window: NSWindow!
 var mainWindowController: MainWindowController?
 ```
 
@@ -102,11 +112,11 @@ I suppose I might have resisted the urge to shorten "mainWindowController" to "m
 
 You could remove **applicationWillTerminate** from the file as well.
 
-In the Project navigator, click on the new MainWindowController.xib file.  Drag a custom view from the palette out onto the the window.  
+In the Project navigator, click on the new MainWindowController.xib file.  (Old:  Drag a custom view from the palette out onto the the window.)  New:  there should be a window in the xib file.  Click in the window 
 
 ![](figs/custom_view.png) 
 
-With the view selected
+until the view is selected
 
 ![](figs/view_added.png) 
 
@@ -114,7 +124,13 @@ in the Identity Inspector, set its class to MyView.
 
 Run and see the custom view turn cyan.  
 
-![](figs/window_with_view.png) 
+![](figs/window_with_view.png)
+
+You will notice there are two windows.
+
+![](figs/two_windows.png)
+
+Put `window.close()` into **applicationDidFinishLaunching**.
 
 ### Actions
 
@@ -183,7 +199,9 @@ class MainWindowController: NSWindowController {
     @IBOutlet weak var myView: MyView!
 ```
 
-Then go to the .xib file and control drag from **File's Owner** to the custom view.  It helps to select the custom view first.  It will show "Outlets".  Choose "myView".  Finally, change the code in **MainWindowController.swift** slightly to
+Then go to the .xib file and control drag from **File's Owner** to the custom view.  It helps to select the custom view first.  It will show "Outlets".  Choose "myView".
+
+Finally, change the code in **MainWindowController.swift** slightly to
 
 
 ```css
@@ -201,7 +219,7 @@ MWC:  button_pushed
 MyView:  myViewDoIt
 ```
 
-Select the View ***folder*** in the Project view, do:  **File > New > File >** and make a new Swift file called **Helper.swift**.
+Select the SimpleView ***folder*** in the Project view, do:  **File > New > File >** and make a new Swift file called **Helper.swift**.
 
 ![](figs/swift_file.png) 
 
@@ -234,9 +252,12 @@ MyView:  myViewDoIt
 Helper:  helperDoIt
 ```
 
+The MainWindowController automatically knows about the Helper without needing to be wired up.
+
 We can pass data from the helper to the calling function just by returning the right data structure.  
 
-However, you may occasionally need to obtain a reference to the MainWindowController (or the View) from somewhere like **Helper.swift**.
+
+Occasionally it is useful to obtain a reference to the MainWindowController (or the View) from somewhere like **Helper.swift**.
 
 We obtain a reference to the App Delegate and MWC with:
 
@@ -280,7 +301,7 @@ MyView:  myViewDoIt
 
 We have propagated an action from the button to the MWC to the Helper;  grabbed a reference there to the App Delegate and thus to the MWC, passed the action to its outlet myView, and then finally called a function in the view.
 
-One last detail about views.  It happens that code can change the status of the model, but the view is not appropriately updated.  
+One last detail about views.  It may happen that code has changed the status of the model, but the view is not appropriately updated.  
 
 The way to force the view to redraw itself is to put something like this in the view
 
@@ -293,5 +314,5 @@ The way to force the view to redraw itself is to put something like this in the 
 
 and when necessary call it through some variation on what we have above.
 
-That's it for this basic introduction.  Hope this is useful to you, I know it will be for me.
+That's it for this basic introduction.  I hope this is useful to you, I know it will be a good reference for me.
 
