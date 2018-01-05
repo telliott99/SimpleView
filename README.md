@@ -99,7 +99,8 @@ var mainWindowController: MainWindowController?
 There are three more lines to add to **applicationDidFinishLaunching** to set up a window controller.
 
 ```css
-let mwc = MainWindowController(windowNibName: "MainWindowController")
+let mwc = MainWindowController(
+    windowNibName: NSNib.Name(rawValue:"MainWindowController"))
 mwc.showWindow(self)
 ```
 The Hillegass book says:  do setup first, then assignment.  So now set the property to point to the window controller we just made
